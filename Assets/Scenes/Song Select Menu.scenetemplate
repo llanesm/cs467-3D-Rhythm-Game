@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 13966, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: Song Select Menu
+  m_EditorClassIdentifier: 
+  templateScene: {fileID: 102900000, guid: e946250844db39f438c66b1ee4cb2c58, type: 3}
+  templateName: 
+  description: 
+  preview: {fileID: 0}
+  dependencies:
+  - dependency: {fileID: 2800000, guid: ab1730b65e8373e4c81fb3c9ecd56bb7, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 2800000, guid: 7de4ab17415f0f341a47d3108e512ddc, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 12800000, guid: 4f9c054514d78a54ab200fb0a90d4af6, type: 3}
+    instantiationMode: 1
+  - dependency: {fileID: 2100000, guid: dc74eb14dfdd1d341a32a09e87723ad5, type: 2}
+    instantiationMode: 0
+  - dependency: {fileID: 2100000, guid: 8a7ecda12a11c3f47aae94ea134cbcd7, type: 2}
+    instantiationMode: 0
+  templatePipeline: {fileID: 0}
+  addToDefaults: 0
