@@ -6,6 +6,7 @@ using System;
 public class NodeFire : MonoBehaviour
 {
     public GameObject Node;
+    public float MovementSpeed = Constants.MovementSpeed;
     public readonly IList<NodeStartPoint> StartingPoints = new List<NodeStartPoint>
     {
         new NodeStartPoint(
@@ -76,7 +77,7 @@ public class NodeFire : MonoBehaviour
             }
             else
             {
-                node.transform.Translate(0, 0, Constants.MovementSpeed);
+                node.transform.Translate(0, 0, MovementSpeed);
             }
         }
     }
