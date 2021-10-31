@@ -6,6 +6,8 @@ using System;
 public class NodeFire : MonoBehaviour
 {
     public GameObject Node;
+    public GameObject CurrNode;
+    private bool perfect = false;
     public float MovementSpeed = Constants.MovementSpeed;
     public readonly IList<NodeStartPoint> StartingPoints = new List<NodeStartPoint>
     {
@@ -50,14 +52,58 @@ public class NodeFire : MonoBehaviour
     int PointToCreateFrom = 0;
     float NextTime = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
     // Update is called once per frame
     void Update()
     {
+
+        // Check for touch input
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(touch.position);
+
+            if (Physics.Raycast(ray, out hit, 100.0f))
+            {
+                if (hit.transform != null && perfect)
+                {
+                    Debug.Log("Perfect Hit");
+                    Destroy(CurrNode);
+                    ExistingNodes.Remove(CurrNode);
+                    perfect = false;
+                }
+                else
+                {
+                    Debug.Log("Too early or Late!");
+                }
+            }
+
+        }
+
+
+        // Check for the user click
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, 100.0f))
+            {
+                if (hit.transform != null && perfect)
+                {
+                    Debug.Log("Perfect Hit");
+                    Destroy(CurrNode);
+                    ExistingNodes.Remove(CurrNode);
+                    perfect = false;
+                }
+                else
+                {
+                    Debug.Log("Too early or Late!");
+                }
+            }
+        }
+
         if (Time.time >= NextTime)
         {
             ExistingNodes.Add(Instantiate(Node, StartingPoints[PointToCreateFrom].Transform, StartingPoints[PointToCreateFrom].Rotation));
@@ -68,17 +114,52 @@ public class NodeFire : MonoBehaviour
                 PointToCreateFrom = 0;
             }
         }
-        foreach (var node in ExistingNodes)
+
+        // Found that the warnings were coming from the foreach() statement (some stuff online I didnt understand) 
+        // So I replaced with a normal for loop and they are now gone
+        for (int i = 0; i < ExistingNodes.Count; i++ ) 
         {
-            if (node.transform.position.z <= Constants.TerminationDepth)
+
+            if (ExistingNodes[i].transform.position.z <= Constants.TerminationDepth)
             {
-                Destroy(node);
-                ExistingNodes.Remove(node);
+                Destroy(ExistingNodes[i]);
+                ExistingNodes.Remove(ExistingNodes[i]);
             }
             else
             {
-                node.transform.Translate(0, 0, MovementSpeed);
+                ExistingNodes[i].transform.Translate(0, 0, MovementSpeed);
             }
         }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Node")
+        {
+            perfectTrue();
+            CurrNode = other.gameObject;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Node")
+        {
+            perfectFalse();
+            if (CurrNode)
+            {
+                Destroy(CurrNode);
+                ExistingNodes.Remove(CurrNode);
+            }
+        }
+    }
+
+    public void perfectTrue()
+    {
+        perfect = true;
+    }
+
+    public void perfectFalse()
+    {
+        perfect = false;
     }
 }
