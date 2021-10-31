@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -297,7 +297,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1001 &2047287001
 PrefabInstance:
@@ -309,7 +309,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 9d5dd8306e3aa584fa5a0b7d4f63659e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9d5dd8306e3aa584fa5a0b7d4f63659e,
         type: 3}
@@ -366,6 +366,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player Ring
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9d5dd8306e3aa584fa5a0b7d4f63659e,
+        type: 3}
+      propertyPath: m_TagString
+      value: Ring
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d5dd8306e3aa584fa5a0b7d4f63659e, type: 3}
 --- !u!1 &2078120029 stripped
@@ -386,5 +391,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20032bf66deb30b48a76ff0bb142c5d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Node: {fileID: 919132149155446097, guid: f5e3650b125891d4e839837dfa962239, type: 3}
+  Node: {fileID: 6024960202905772873, guid: d413ba9f0c9f5bf438b2d282260d8acf, type: 3}
+  CurrNode: {fileID: 0}
   MovementSpeed: -0.1
+--- !u!65 &2078120034
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078120029}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0398, y: 0.0398, z: 0.05}
+  m_Center: {x: 0, y: 0, z: 0.0021497093}
