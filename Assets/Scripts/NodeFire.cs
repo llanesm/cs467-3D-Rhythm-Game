@@ -51,12 +51,16 @@ public class NodeFire : MonoBehaviour
     readonly List<GameObject> ExistingNodes = new List<GameObject>();
     public int PointToCreateFrom = 0;
     public float NextTime = 0;
-    public int Score = 0;
+    public ScoreVariable Score;
     public int Mult = 1;
     public int HitInARow = 0;
     public int MissedNodesOrTapsInARow = 0;
     public bool GameOver = false;
 
+    void Start()
+    {
+        Score.Value = 0;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -169,7 +173,7 @@ public class NodeFire : MonoBehaviour
         Destroy(CurrNode);
         ExistingNodes.Remove(CurrNode);
         Perfect = false;
-        Score += Constants.AddToScore * Mult;
+        Score.Value += Constants.AddToScore * Mult;
         MissedNodesOrTapsInARow = 0;
         if (HitInARow >= Constants.HotStreakThreshold && Mult <= 3)
         {
