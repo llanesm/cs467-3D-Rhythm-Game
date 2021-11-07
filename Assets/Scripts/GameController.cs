@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-public class NodeFire : MonoBehaviour
+public class GameController : MonoBehaviour
 {
     public GameObject Node;
     public GameObject CurrNode;
