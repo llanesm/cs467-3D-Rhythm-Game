@@ -7,7 +7,7 @@ public class NodeFire : MonoBehaviour
 {
     public GameObject Node;
     public GameObject CurrNode;
-    private bool perfect = false;
+    private bool Perfect = false;
     public float MovementSpeed = Constants.MovementSpeed;
     public readonly IList<NodeStartPoint> StartingPoints = new List<NodeStartPoint>
     {
@@ -49,8 +49,13 @@ public class NodeFire : MonoBehaviour
             ),
     };
     readonly List<GameObject> ExistingNodes = new List<GameObject>();
-    int PointToCreateFrom = 0;
-    float NextTime = 0;
+    public int PointToCreateFrom = 0;
+    public float NextTime = 0;
+    public int Score = 0;
+    public int Mult = 1;
+    public int HitInARow = 0;
+    public int MissedNodesOrTapsInARow = 0;
+    public bool GameOver = false;
 
     // Update is called once per frame
     void Update()
@@ -60,22 +65,17 @@ public class NodeFire : MonoBehaviour
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-
-            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(touch.position);
 
-            if (Physics.Raycast(ray, out hit, 100.0f))
+            if (Physics.Raycast(ray, out RaycastHit hit, 100.0f))
             {
-                if (hit.transform != null && perfect)
+                if (hit.transform != null && Perfect)
                 {
-                    Debug.Log("Perfect Hit");
-                    Destroy(CurrNode);
-                    ExistingNodes.Remove(CurrNode);
-                    perfect = false;
+                    Scored();
                 }
                 else
                 {
-                    Debug.Log("Too early or Late!");
+                    Missed();
                 }
             }
 
@@ -85,21 +85,17 @@ public class NodeFire : MonoBehaviour
         // Check for the user click
         if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit, 100.0f))
+            if (Physics.Raycast(ray, out RaycastHit hit, 100.0f))
             {
-                if (hit.transform != null && perfect)
+                if (hit.transform != null && Perfect)
                 {
-                    Debug.Log("Perfect Hit");
-                    Destroy(CurrNode);
-                    ExistingNodes.Remove(CurrNode);
-                    perfect = false;
+                    Scored();
                 }
                 else
                 {
-                    Debug.Log("Too early or Late!");
+                    Missed();
                 }
             }
         }
@@ -122,11 +118,15 @@ public class NodeFire : MonoBehaviour
 
             if (ExistingNodes[i].transform.position.z <= Constants.TerminationDepth)
             {
+                // missed node
                 Destroy(ExistingNodes[i]);
                 ExistingNodes.Remove(ExistingNodes[i]);
+                HitInARow = 0;
+                Missed();
             }
             else
             {
+                // move node
                 ExistingNodes[i].transform.Translate(0, 0, MovementSpeed);
             }
         }
@@ -135,7 +135,7 @@ public class NodeFire : MonoBehaviour
     {
         if (other.tag == "Node")
         {
-            perfectTrue();
+            PerfectTrue();
             CurrNode = other.gameObject;
         }
     }
@@ -144,7 +144,7 @@ public class NodeFire : MonoBehaviour
     {
         if (other.tag == "Node")
         {
-            perfectFalse();
+            PerfectFalse();
             if (CurrNode)
             {
                 Destroy(CurrNode);
@@ -153,13 +153,38 @@ public class NodeFire : MonoBehaviour
         }
     }
 
-    public void perfectTrue()
+    public void PerfectTrue()
     {
-        perfect = true;
+        Perfect = true;
     }
 
-    public void perfectFalse()
+    public void PerfectFalse()
     {
-        perfect = false;
+        Perfect = false;
+    }
+
+    public void Scored()
+    {
+        Debug.Log("Hit!");
+        Destroy(CurrNode);
+        ExistingNodes.Remove(CurrNode);
+        Perfect = false;
+        Score += Constants.AddToScore * Mult;
+        MissedNodesOrTapsInARow = 0;
+        if (HitInARow >= Constants.HotStreakThreshold && Mult <= 3)
+        {
+            Mult++;
+        }
+        
+    }
+
+    public void Missed()
+    {
+        Debug.Log("Miss!");
+        MissedNodesOrTapsInARow++;
+        if (MissedNodesOrTapsInARow > Constants.AmountMissedToGameOver)
+        {
+            GameOver = true;
+        }
     }
 }
