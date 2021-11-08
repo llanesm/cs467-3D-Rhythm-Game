@@ -5,6 +5,7 @@ using UnityEngine;
 public class ScoreScript : MonoBehaviour
 {
     public ScoreVariable Score;
+
     void Update()
     {
         string scoreText = Score.Value.ToString();

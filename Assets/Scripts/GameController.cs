@@ -1,10 +1,10 @@
 using Assets.Scripts;
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 public class GameController : MonoBehaviour
 {
+    #region Properties
     public GameObject Node;
     public GameObject CurrNode;
     private bool Perfect = false;
@@ -52,20 +52,62 @@ public class GameController : MonoBehaviour
     public int PointToCreateFrom = 0;
     public float NextTime = 0;
     public ScoreVariable Score;
-    public int Mult = 1;
+    public HotStreakVariable HotStreak;
     public int HitInARow = 0;
     public int MissedNodesOrTapsInARow = 0;
     public bool GameOver = false;
+    #endregion
 
     void Start()
     {
         Score.Value = 0;
+        HotStreak.Multiplier = 1;
     }
     // Update is called once per frame
     void Update()
     {
+        CheckForTapInput();
 
-        // Check for touch input
+        CheckForClickInput();
+
+        NewNodes();
+
+        MoveNodes();
+    }
+
+    #region Scoring
+    public void Scored()
+    {
+        Debug.Log("Hit!");
+        Destroy(CurrNode);
+        ExistingNodes.Remove(CurrNode);
+        Perfect = false;
+        Score.Value += Constants.AddToScore * HotStreak.Multiplier;
+        HitInARow++;
+        MissedNodesOrTapsInARow = 0;
+        if (HitInARow >= Constants.HotStreakThreshold * HotStreak.Multiplier && HotStreak.Multiplier < 3)
+        {
+            HotStreak.Multiplier++;
+        }
+        
+    }
+
+    public void Missed()
+    {
+        Debug.Log("Miss!");
+        HitInARow = 0;
+        MissedNodesOrTapsInARow++;
+        HotStreak.Multiplier = 1;
+        if (MissedNodesOrTapsInARow > Constants.AmountMissedToGameOver)
+        {
+            GameOver = true;
+        }
+    }
+    #endregion
+
+    #region Input
+    public void CheckForTapInput()
+    {
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -84,9 +126,10 @@ public class GameController : MonoBehaviour
             }
 
         }
+    }
 
-
-        // Check for the user click
+    public void CheckForClickInput()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -103,38 +146,10 @@ public class GameController : MonoBehaviour
                 }
             }
         }
-
-        if (Time.time >= NextTime)
-        {
-            ExistingNodes.Add(Instantiate(Node, StartingPoints[PointToCreateFrom].Transform, StartingPoints[PointToCreateFrom].Rotation));
-            NextTime += Constants.Interval;
-            PointToCreateFrom++;
-            if (PointToCreateFrom > StartingPoints.Count - 1)
-            {
-                PointToCreateFrom = 0;
-            }
-        }
-
-        // Found that the warnings were coming from the foreach() statement (some stuff online I didnt understand) 
-        // So I replaced with a normal for loop and they are now gone
-        for (int i = 0; i < ExistingNodes.Count; i++ ) 
-        {
-
-            if (ExistingNodes[i].transform.position.z <= Constants.TerminationDepth)
-            {
-                // missed node
-                Destroy(ExistingNodes[i]);
-                ExistingNodes.Remove(ExistingNodes[i]);
-                HitInARow = 0;
-                Missed();
-            }
-            else
-            {
-                // move node
-                ExistingNodes[i].transform.Translate(0, 0, MovementSpeed);
-            }
-        }
     }
+
+    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Node")
@@ -166,29 +181,42 @@ public class GameController : MonoBehaviour
     {
         Perfect = false;
     }
+    #endregion
 
-    public void Scored()
+    #region Nodes
+    private void NewNodes()
     {
-        Debug.Log("Hit!");
-        Destroy(CurrNode);
-        ExistingNodes.Remove(CurrNode);
-        Perfect = false;
-        Score.Value += Constants.AddToScore * Mult;
-        MissedNodesOrTapsInARow = 0;
-        if (HitInARow >= Constants.HotStreakThreshold && Mult <= 3)
+        if (Time.time >= NextTime)
         {
-            Mult++;
-        }
-        
-    }
-
-    public void Missed()
-    {
-        Debug.Log("Miss!");
-        MissedNodesOrTapsInARow++;
-        if (MissedNodesOrTapsInARow > Constants.AmountMissedToGameOver)
-        {
-            GameOver = true;
+            ExistingNodes.Add(Instantiate(Node, StartingPoints[PointToCreateFrom].Transform, StartingPoints[PointToCreateFrom].Rotation));
+            NextTime += Constants.Interval;
+            PointToCreateFrom++;
+            if (PointToCreateFrom > StartingPoints.Count - 1)
+            {
+                PointToCreateFrom = 0;
+            }
         }
     }
+    
+    public void MoveNodes()
+    {
+        for (int i = 0; i < ExistingNodes.Count; i++)
+        {
+
+            if (ExistingNodes[i].transform.position.z <= Constants.TerminationDepth)
+            {
+                // missed node
+                Destroy(ExistingNodes[i]);
+                ExistingNodes.Remove(ExistingNodes[i]);
+                HitInARow = 0;
+                Missed();
+            }
+            else
+            {
+                // move node
+                ExistingNodes[i].transform.Translate(0, 0, MovementSpeed);
+            }
+        }
+    }
+    #endregion
 }
