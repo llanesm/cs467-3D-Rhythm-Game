@@ -148,8 +148,6 @@ public class GameController : MonoBehaviour
         }
     }
 
-    
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Node")
@@ -168,6 +166,7 @@ public class GameController : MonoBehaviour
             {
                 Destroy(CurrNode);
                 ExistingNodes.Remove(CurrNode);
+                Missed();
             }
         }
     }
@@ -202,20 +201,7 @@ public class GameController : MonoBehaviour
     {
         for (int i = 0; i < ExistingNodes.Count; i++)
         {
-
-            if (ExistingNodes[i].transform.position.z <= Constants.TerminationDepth)
-            {
-                // missed node
-                Destroy(ExistingNodes[i]);
-                ExistingNodes.Remove(ExistingNodes[i]);
-                HitInARow = 0;
-                Missed();
-            }
-            else
-            {
-                // move node
-                ExistingNodes[i].transform.Translate(0, 0, MovementSpeed);
-            }
+            ExistingNodes[i].transform.Translate(0, 0, MovementSpeed);
         }
     }
     #endregion
