@@ -9,9 +9,20 @@ public class GameController : MonoBehaviour
 
     public GameObject Node;
     public GameObject CurrNode;
-    private bool Perfect = false;
+    public int HitPrecision_N = 0;
+    public int HitPrecision_NE = 0;
+    public int HitPrecision_E = 0;
+    public int HitPrecision_SE = 0;
+    public int HitPrecision_S = 0;
+    public int HitPrecision_SW = 0;
+    public int HitPrecision_W = 0;
+    public int HitPrecision_NW = 0;
+    [SerializeField] private Material RingMaterial;
+    private Color MutedDarkGreen = new Color(46/255f, 64 / 255f, 69 / 255f);
+    private Color MutedRed = new Color(88 / 255f, 44 / 255f, 77 / 255f);
+    private Color MutedBlue = new Color(50 / 255f, 59 / 255f, 120 / 255f);
     public float MovementSpeed = Constants.MovementSpeed;
-    public readonly IList<NodeStartPoint> StartingPoints = new List<NodeStartPoint>
+    public IList<NodeStartPoint> StartingPoints = new List<NodeStartPoint>
     {
         new NodeStartPoint(
             name: "NE",
@@ -50,7 +61,7 @@ public class GameController : MonoBehaviour
             rotZ: Constants.InterCardinalRotation
             ),
     };
-    readonly List<GameObject> ExistingNodes = new List<GameObject>();
+    public List<GameObject> ExistingNodes = new List<GameObject>();
     public int PointToCreateFrom = 0;
     public float NextTime = 0;
     public ScoreVariable Score;
@@ -71,36 +82,65 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckForTapInput();
-
-        CheckForClickInput();
 
         NewNodes();
 
         MoveNodes();
+
+        CheckForTapInput();
+
+        CheckForClickInput();
+
     }
 
     #region Scoring
 
-    private void Scored()
+    public void Scored(string direction, int precision)
     {
         Debug.Log("Hit!");
         Destroy(CurrNode);
         ExistingNodes.Remove(CurrNode);
-        Perfect = false;
-        Score.Value += Constants.AddToScore * HotStreak.Multiplier;
+        Score.Value += (Constants.AddToScore * HotStreak.Multiplier) + precision;
         HitInARow++;
         MissedNodesOrTapsInARow = 0;
         if (HitInARow >= Constants.HotStreakThreshold * HotStreak.Multiplier && HotStreak.Multiplier < 3)
         {
             HotStreak.Multiplier++;
+            if (HotStreak.Multiplier == 2)
+            {
+                RingMaterial.color = MutedRed;
+            } else if (HotStreak.Multiplier == 3)
+            {
+                RingMaterial.color = MutedBlue;
+            }
+            
         }
-        
+
+        // Handle resetting the HitPrecision based on direction
+        if (direction == "NE")
+        {
+            HitPrecision_NE = 0;
+        }
+        else if (direction == "NW")
+        {
+            HitPrecision_NW = 0;
+        }
+        else if (direction == "SW")
+        {
+            HitPrecision_SW = 0;
+        }
+        else if (direction == "SE")
+        {
+            HitPrecision_SE = 0;
+        }
+
     }
 
     private void Missed()
     {
         Debug.Log("Miss!");
+        ///Debug.Log(HitPrecision_NE);
+        RingMaterial.color = MutedDarkGreen;
         if (HitInARow > HighestStreak.Value)
         {
             HighestStreak.Value = HitInARow;
@@ -127,9 +167,9 @@ public class GameController : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hit, 100.0f))
             {
-                if (hit.transform != null && Perfect)
+                if (hit.transform != null && HitPrecision_NE >0)
                 {
-                    Scored();
+                    Scored("NE", HitPrecision_NE);
                 }
                 else
                 {
@@ -148,11 +188,22 @@ public class GameController : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hit, 100.0f))
             {
-                if (hit.transform != null && Perfect)
+                if (hit.transform.name.Contains("NE") && HitPrecision_NE > 0)
                 {
-                    Scored();
+                    Scored("NE", HitPrecision_NE);
                 }
-                else
+                else if (hit.transform.name.Contains("SE") && HitPrecision_SE > 0)
+                {
+                    Scored("SE", HitPrecision_SE);
+                }
+                else if (hit.transform.name.Contains("SW") && HitPrecision_SW > 0)
+                {
+                    Scored("SW", HitPrecision_SW);
+                }
+                else if (hit.transform.name.Contains("NW") && HitPrecision_NW > 0)
+                {
+                    Scored("NW", HitPrecision_NW);
+                } else
                 {
                     Missed();
                 }
@@ -160,39 +211,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Node")
-        {
-            PerfectTrue();
-            CurrNode = other.gameObject;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Node")
-        {
-            PerfectFalse();
-            if (CurrNode)
-            {
-                Destroy(CurrNode);
-                ExistingNodes.Remove(CurrNode);
-                Missed();
-            }
-        }
-    }
-
-    private void PerfectTrue()
-    {
-        Perfect = true;
-    }
-
-    private void PerfectFalse()
-    {
-        Perfect = false;
-    }
-
+ 
     #endregion
 
     #region Nodes
@@ -200,7 +219,12 @@ public class GameController : MonoBehaviour
     {
         if (Time.time >= NextTime)
         {
-            ExistingNodes.Add(Instantiate(Node, StartingPoints[PointToCreateFrom].Transform, StartingPoints[PointToCreateFrom].Rotation));
+            GameObject NewNode = Instantiate(Node, StartingPoints[PointToCreateFrom].Transform, StartingPoints[PointToCreateFrom].Rotation);
+
+            // Adding name to differentiate nodes before adding to existingNodes
+            NewNode.name = StartingPoints[PointToCreateFrom].Name;
+            ExistingNodes.Add(NewNode);
+
             NextTime += Constants.Interval;
             PointToCreateFrom++;
             if (PointToCreateFrom > StartingPoints.Count - 1)
