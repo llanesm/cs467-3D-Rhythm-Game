@@ -1,10 +1,12 @@
 using Assets.Scripts;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
     #region Properties
+
     public GameObject Node;
     public GameObject CurrNode;
     private bool Perfect = false;
@@ -53,15 +55,18 @@ public class GameController : MonoBehaviour
     public float NextTime = 0;
     public ScoreVariable Score;
     public HotStreakVariable HotStreak;
+    public HighestStreakVariable HighestStreak;
     public int HitInARow = 0;
     public int MissedNodesOrTapsInARow = 0;
     public bool GameOver = false;
+
     #endregion
 
     void Start()
     {
         Score.Value = 0;
         HotStreak.Multiplier = 1;
+        HighestStreak.Value = 0;
     }
     // Update is called once per frame
     void Update()
@@ -76,7 +81,8 @@ public class GameController : MonoBehaviour
     }
 
     #region Scoring
-    public void Scored()
+
+    private void Scored()
     {
         Debug.Log("Hit!");
         Destroy(CurrNode);
@@ -92,21 +98,27 @@ public class GameController : MonoBehaviour
         
     }
 
-    public void Missed()
+    private void Missed()
     {
         Debug.Log("Miss!");
+        if (HitInARow > HighestStreak.Value)
+        {
+            HighestStreak.Value = HitInARow;
+        }
         HitInARow = 0;
         MissedNodesOrTapsInARow++;
         HotStreak.Multiplier = 1;
         if (MissedNodesOrTapsInARow > Constants.AmountMissedToGameOver)
         {
-            GameOver = true;
+            SceneManager.LoadScene("GameOver", LoadSceneMode.Single);
         }
     }
+
     #endregion
 
     #region Input
-    public void CheckForTapInput()
+
+    private void CheckForTapInput()
     {
         if (Input.touchCount > 0)
         {
@@ -128,7 +140,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void CheckForClickInput()
+    private void CheckForClickInput()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -171,15 +183,16 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void PerfectTrue()
+    private void PerfectTrue()
     {
         Perfect = true;
     }
 
-    public void PerfectFalse()
+    private void PerfectFalse()
     {
         Perfect = false;
     }
+
     #endregion
 
     #region Nodes
@@ -197,12 +210,13 @@ public class GameController : MonoBehaviour
         }
     }
     
-    public void MoveNodes()
+    private void MoveNodes()
     {
         for (int i = 0; i < ExistingNodes.Count; i++)
         {
             ExistingNodes[i].transform.Translate(0, 0, MovementSpeed);
         }
     }
+
     #endregion
 }
