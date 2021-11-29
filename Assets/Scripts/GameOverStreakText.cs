@@ -8,7 +8,7 @@ public class GameOverStreakText : MonoBehaviour
     void Start()
     {
         string streakText = HighestStreak.Value.ToString();
-        streakText = string.Concat("Longest\nStreak: ", streakText);
+        streakText = string.Concat("Max Streak: ", streakText);
         this.GetComponent<TextMesh>().text = streakText;
     }
 }

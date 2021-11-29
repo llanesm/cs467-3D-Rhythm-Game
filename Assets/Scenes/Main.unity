@@ -663,8 +663,8 @@ Camera:
   m_GameObject: {fileID: 412651089}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.78039217, g: 0.73333335, b: 0.7882353, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1038,18 +1038,18 @@ TextMesh:
   m_GameObject: {fileID: 841457036}
   m_Text: '      0'
   m_OffsetZ: 0
-  m_CharacterSize: 0.5
+  m_CharacterSize: 0.25
   m_LineSpacing: 1
-  m_Anchor: 0
-  m_Alignment: 0
+  m_Anchor: 4
+  m_Alignment: 1
   m_TabSize: 4
-  m_FontSize: 0
+  m_FontSize: 64
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Font: {fileID: 12800000, guid: ceb4ea8ee7c06e544a35b4ce1291ae51, type: 3}
   m_Color:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
 --- !u!23 &841457038
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1069,7 +1069,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 2100000, guid: ceb4ea8ee7c06e544a35b4ce1291ae51, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1099,8 +1099,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 841457036}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.35, y: -3.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.14, y: -2.99, z: 0}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -1899,18 +1899,18 @@ TextMesh:
   m_GameObject: {fileID: 1943851901}
   m_Text: 1x
   m_OffsetZ: 0
-  m_CharacterSize: 0.5
+  m_CharacterSize: 0.25
   m_LineSpacing: 1
-  m_Anchor: 0
-  m_Alignment: 0
+  m_Anchor: 4
+  m_Alignment: 1
   m_TabSize: 4
-  m_FontSize: 0
+  m_FontSize: 64
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Font: {fileID: 12800000, guid: ceb4ea8ee7c06e544a35b4ce1291ae51, type: 3}
   m_Color:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
 --- !u!23 &1943851903
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1930,7 +1930,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 2100000, guid: ceb4ea8ee7c06e544a35b4ce1291ae51, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1960,8 +1960,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1943851901}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: -3.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.03, y: -2.38, z: 0}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -2273,6 +2273,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 9d5dd8306e3aa584fa5a0b7d4f63659e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 32b286a13c8012b488af62b9ab5891c9, type: 2}
     - target: {fileID: 919132149155446097, guid: 9d5dd8306e3aa584fa5a0b7d4f63659e,
         type: 3}
       propertyPath: m_Name
@@ -2313,13 +2318,14 @@ MonoBehaviour:
   HitPrecision_SW: 0
   HitPrecision_W: 0
   HitPrecision_NW: 0
+  RingMaterial: {fileID: 2100000, guid: 32b286a13c8012b488af62b9ab5891c9, type: 2}
   MovementSpeed: -0.1
   ExistingNodes: []
   PointToCreateFrom: 0
   NextTime: 0
   Score: {fileID: 11400000, guid: 7ea1c7caa92fa9548834deb4b3e582f0, type: 2}
   HotStreak: {fileID: 11400000, guid: 7c3056da83e514e4c9ff8f63978ec747, type: 2}
-  HighestStreak: {fileID: 11400000, guid: b37d27e5e457ab144a16d5d8a20654ff, type: 2}
+  HighestStreak: {fileID: 0}
   HitInARow: 0
   MissedNodesOrTapsInARow: 0
   GameOver: 0

@@ -78,6 +78,7 @@ public class GameController : MonoBehaviour
         Score.Value = 0;
         HotStreak.Multiplier = 1;
         HighestStreak.Value = 0;
+        RingMaterial.color = MutedDarkGreen;
     }
     // Update is called once per frame
     void Update()
@@ -136,15 +137,17 @@ public class GameController : MonoBehaviour
 
     }
 
-    private void Missed()
+    public void Missed()
     {
         Debug.Log("Miss!");
         ///Debug.Log(HitPrecision_NE);
         RingMaterial.color = MutedDarkGreen;
+        /*
         if (HitInARow > HighestStreak.Value)
         {
             HighestStreak.Value = HitInARow;
         }
+        */
         HitInARow = 0;
         MissedNodesOrTapsInARow++;
         HotStreak.Multiplier = 1;
