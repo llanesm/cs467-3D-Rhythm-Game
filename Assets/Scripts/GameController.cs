@@ -15,6 +15,10 @@ public class GameController : MonoBehaviour
     public int HitPrecision_SW = 0;
     public int HitPrecision_W = 0;
     public int HitPrecision_NW = 0;
+    [SerializeField] private Material RingMaterial;
+    private Color MutedDarkGreen = new Color(46/255f, 64 / 255f, 69 / 255f);
+    private Color MutedRed = new Color(88 / 255f, 44 / 255f, 77 / 255f);
+    private Color MutedBlue = new Color(50 / 255f, 59 / 255f, 120 / 255f);
     public float MovementSpeed = Constants.MovementSpeed;
     public IList<NodeStartPoint> StartingPoints = new List<NodeStartPoint>
     {
@@ -90,12 +94,20 @@ public class GameController : MonoBehaviour
         Debug.Log("Hit!");
         Destroy(CurrNode);
         ExistingNodes.Remove(CurrNode);
-        Score.Value += Constants.AddToScore * HotStreak.Multiplier;
+        Score.Value += (Constants.AddToScore * HotStreak.Multiplier) + precision;
         HitInARow++;
         MissedNodesOrTapsInARow = 0;
         if (HitInARow >= Constants.HotStreakThreshold * HotStreak.Multiplier && HotStreak.Multiplier < 3)
         {
             HotStreak.Multiplier++;
+            if (HotStreak.Multiplier == 2)
+            {
+                RingMaterial.color = MutedRed;
+            } else if (HotStreak.Multiplier == 3)
+            {
+                RingMaterial.color = MutedBlue;
+            }
+            
         }
 
         // Handle resetting the HitPrecision based on direction
@@ -122,6 +134,7 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("Miss!");
         ///Debug.Log(HitPrecision_NE);
+        RingMaterial.color = MutedDarkGreen;
         HitInARow = 0;
         MissedNodesOrTapsInARow++;
         HotStreak.Multiplier = 1;
