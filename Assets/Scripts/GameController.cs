@@ -1,10 +1,12 @@
 using Assets.Scripts;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
     #region Properties
+
     public GameObject Node;
     public GameObject CurrNode;
     public int HitPrecision_N = 0;
@@ -64,15 +66,18 @@ public class GameController : MonoBehaviour
     public float NextTime = 0;
     public ScoreVariable Score;
     public HotStreakVariable HotStreak;
+    public HighestStreakVariable HighestStreak;
     public int HitInARow = 0;
     public int MissedNodesOrTapsInARow = 0;
     public bool GameOver = false;
+
     #endregion
 
     void Start()
     {
         Score.Value = 0;
         HotStreak.Multiplier = 1;
+        HighestStreak.Value = 0;
     }
     // Update is called once per frame
     void Update()
@@ -89,6 +94,7 @@ public class GameController : MonoBehaviour
     }
 
     #region Scoring
+
     public void Scored(string direction, int precision)
     {
         Debug.Log("Hit!");
@@ -130,23 +136,29 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void Missed()
+    private void Missed()
     {
         Debug.Log("Miss!");
         ///Debug.Log(HitPrecision_NE);
         RingMaterial.color = MutedDarkGreen;
+        if (HitInARow > HighestStreak.Value)
+        {
+            HighestStreak.Value = HitInARow;
+        }
         HitInARow = 0;
         MissedNodesOrTapsInARow++;
         HotStreak.Multiplier = 1;
         if (MissedNodesOrTapsInARow > Constants.AmountMissedToGameOver)
         {
-            GameOver = true;
+            SceneManager.LoadScene("GameOver", LoadSceneMode.Single);
         }
     }
+
     #endregion
 
     #region Input
-    public void CheckForTapInput()
+
+    private void CheckForTapInput()
     {
         if (Input.touchCount > 0)
         {
@@ -168,7 +180,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void CheckForClickInput()
+    private void CheckForClickInput()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -199,40 +211,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    /*
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Node")
-        {
-            IncHitPrecision();
-            CurrNode = other.gameObject;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Node")
-        {
-            DecHitPrecision();
-            if (CurrNode && HitPrecision == 0)
-            {
-                Destroy(CurrNode);
-                ExistingNodes.Remove(CurrNode);
-                Missed();
-            }
-        }
-    }
-
-    public void IncHitPrecision()
-    {
-        HitPrecision++;
-    }
-
-    public void DecHitPrecision()
-    {
-        HitPrecision--;
-    }
-    */
+ 
     #endregion
 
     #region Nodes
@@ -255,12 +234,13 @@ public class GameController : MonoBehaviour
         }
     }
     
-    public void MoveNodes()
+    private void MoveNodes()
     {
         for (int i = 0; i < ExistingNodes.Count; i++)
         {
             ExistingNodes[i].transform.Translate(0, 0, MovementSpeed);
         }
     }
+
     #endregion
 }
