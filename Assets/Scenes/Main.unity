@@ -2333,6 +2333,13 @@ MonoBehaviour:
   MusicSource: {fileID: 0}
   PointToCreateFrom: 0
   NextTime: 0
+  MovementSpeed: -0.03
+  ExistingNodes: []
+  PointToCreateFrom: 0
+  NextTime: 0
+  Score: {fileID: 11400000, guid: 7ea1c7caa92fa9548834deb4b3e582f0, type: 2}
+  HotStreak: {fileID: 11400000, guid: 7c3056da83e514e4c9ff8f63978ec747, type: 2}
+  HighestStreak: {fileID: 11400000, guid: b37d27e5e457ab144a16d5d8a20654ff, type: 2}
   HitInARow: 0
   MissedNodesOrTapsInARow: 0
   SyncedNodesPos: 0

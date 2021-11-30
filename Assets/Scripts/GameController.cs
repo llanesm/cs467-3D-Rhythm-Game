@@ -76,12 +76,12 @@ public class GameController : MonoBehaviour
     public IList<AudioSyncedNodeStart> AudioSyncedNodes = new List<AudioSyncedNodeStart>    // list of node start times (audio time minus travel time) along with start point
     {
         new AudioSyncedNodeStart(8F - 6.6F, StartingPoints[0]),
-        new AudioSyncedNodeStart(13.5F - 6.3F, StartingPoints[0]),
-        new AudioSyncedNodeStart(16F - Constants.NodeDelay, StartingPoints[0]),
-        new AudioSyncedNodeStart(18.5F - Constants.NodeDelay, StartingPoints[0]),
+        new AudioSyncedNodeStart(13.5F - 6.3F, StartingPoints[1]),
+        new AudioSyncedNodeStart(16F - Constants.NodeDelay, StartingPoints[2]),
+        new AudioSyncedNodeStart(18.5F - Constants.NodeDelay, StartingPoints[3]),
         new AudioSyncedNodeStart(20F - Constants.NodeDelay, StartingPoints[0]),
-        new AudioSyncedNodeStart(21.5F - Constants.NodeDelay, StartingPoints[0]),
-        new AudioSyncedNodeStart(23.5F - Constants.NodeDelay, StartingPoints[0])
+        new AudioSyncedNodeStart(21.5F - Constants.NodeDelay, StartingPoints[1]),
+        new AudioSyncedNodeStart(23.5F - Constants.NodeDelay, StartingPoints[2])
     };
 
     public int PointToCreateFrom = 0;
@@ -89,9 +89,9 @@ public class GameController : MonoBehaviour
     public int HitInARow = 0;
     public int MissedNodesOrTapsInARow = 0;
     public int SyncedNodesPos = 0;
-    public Timer timer;
-    public float begin;
-    public float end;
+    //public Timer timer;
+    //public float begin;
+    //public float end;
 
     #endregion
 
@@ -134,7 +134,8 @@ public class GameController : MonoBehaviour
             if (HotStreak.Multiplier == 2)
             {
                 RingMaterial.color = MutedRed;
-            } else if (HotStreak.Multiplier == 3)
+            }
+            else if (HotStreak.Multiplier == 3)
             {
                 RingMaterial.color = MutedBlue;
             }
