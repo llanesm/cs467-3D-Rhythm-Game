@@ -1,6 +1,7 @@
 using Assets.Scripts;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using System.Timers;
 using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
@@ -17,12 +18,20 @@ public class GameController : MonoBehaviour
     public int HitPrecision_SW = 0;
     public int HitPrecision_W = 0;
     public int HitPrecision_NW = 0;
-    [SerializeField] private Material RingMaterial;
+
+    [SerializeField]
+    private Material RingMaterial;
+
     private Color MutedDarkGreen = new Color(46/255f, 64 / 255f, 69 / 255f);
     private Color MutedRed = new Color(88 / 255f, 44 / 255f, 77 / 255f);
     private Color MutedBlue = new Color(50 / 255f, 59 / 255f, 120 / 255f);
     public float MovementSpeed = Constants.MovementSpeed;
-    public IList<NodeStartPoint> StartingPoints = new List<NodeStartPoint>
+    public ScoreVariable Score;
+    public HotStreakVariable HotStreak;
+    public HighestStreakVariable HighestStreak;
+    public AudioSource MusicSource;
+
+    public static readonly IList<NodeStartPoint> StartingPoints = new List<NodeStartPoint>
     {
         new NodeStartPoint(
             name: "NE",
@@ -61,27 +70,42 @@ public class GameController : MonoBehaviour
             rotZ: Constants.InterCardinalRotation
             ),
     };
-    public List<GameObject> ExistingNodes = new List<GameObject>();
+
+    private readonly IList<GameObject> ExistingNodes = new List<GameObject>();
+
+    public IList<AudioSyncedNodeStart> AudioSyncedNodes = new List<AudioSyncedNodeStart>    // list of node start times (audio time minus travel time) along with start point
+    {
+        new AudioSyncedNodeStart(8F - 6.6F, StartingPoints[0]),
+        new AudioSyncedNodeStart(13.5F - 6.3F, StartingPoints[0]),
+        new AudioSyncedNodeStart(16F - Constants.NodeDelay, StartingPoints[0]),
+        new AudioSyncedNodeStart(18.5F - Constants.NodeDelay, StartingPoints[0]),
+        new AudioSyncedNodeStart(20F - Constants.NodeDelay, StartingPoints[0]),
+        new AudioSyncedNodeStart(21.5F - Constants.NodeDelay, StartingPoints[0]),
+        new AudioSyncedNodeStart(23.5F - Constants.NodeDelay, StartingPoints[0])
+    };
+
     public int PointToCreateFrom = 0;
     public float NextTime = 0;
-    public ScoreVariable Score;
-    public HotStreakVariable HotStreak;
-    public HighestStreakVariable HighestStreak;
     public int HitInARow = 0;
     public int MissedNodesOrTapsInARow = 0;
-    public bool GameOver = false;
+    public int SyncedNodesPos = 0;
+    public Timer timer;
+    public float begin;
+    public float end;
 
     #endregion
 
-    void Start()
+    private void Start()
     {
         Score.Value = 0;
         HotStreak.Multiplier = 1;
         HighestStreak.Value = 0;
         RingMaterial.color = MutedDarkGreen;
+        MusicSource = GetComponent<AudioSource>();
     }
+
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
         NewNodes();
@@ -134,20 +158,16 @@ public class GameController : MonoBehaviour
         {
             HitPrecision_SE = 0;
         }
-
     }
 
     public void Missed()
     {
         Debug.Log("Miss!");
-        ///Debug.Log(HitPrecision_NE);
         RingMaterial.color = MutedDarkGreen;
-        /*
         if (HitInARow > HighestStreak.Value)
         {
             HighestStreak.Value = HitInARow;
         }
-        */
         HitInARow = 0;
         MissedNodesOrTapsInARow++;
         HotStreak.Multiplier = 1;
@@ -179,7 +199,6 @@ public class GameController : MonoBehaviour
                     Missed();
                 }
             }
-
         }
     }
 
@@ -213,35 +232,34 @@ public class GameController : MonoBehaviour
             }
         }
     }
-
  
     #endregion
 
     #region Nodes
+
     private void NewNodes()
     {
-        if (Time.time >= NextTime)
+        if (SyncedNodesPos < AudioSyncedNodes.Count && MusicSource.time >= AudioSyncedNodes[SyncedNodesPos].StartTime)
         {
-            GameObject NewNode = Instantiate(Node, StartingPoints[PointToCreateFrom].Transform, StartingPoints[PointToCreateFrom].Rotation);
+            GameObject NewNode = Instantiate(Node, AudioSyncedNodes[SyncedNodesPos].StartPoint.Transform, AudioSyncedNodes[SyncedNodesPos].StartPoint.Rotation);
 
             // Adding name to differentiate nodes before adding to existingNodes
-            NewNode.name = StartingPoints[PointToCreateFrom].Name;
+            NewNode.name = StartingPoints[SyncedNodesPos].Name;
             ExistingNodes.Add(NewNode);
-
-            NextTime += Constants.Interval;
-            PointToCreateFrom++;
-            if (PointToCreateFrom > StartingPoints.Count - 1)
-            {
-                PointToCreateFrom = 0;
-            }
+            SyncedNodesPos++;
         }
     }
-    
+
     private void MoveNodes()
     {
         for (int i = 0; i < ExistingNodes.Count; i++)
         {
             ExistingNodes[i].transform.Translate(0, 0, MovementSpeed);
+        }
+
+        if (!MusicSource.isPlaying)
+        {
+            SceneManager.LoadScene("GameOver", LoadSceneMode.Single);
         }
     }
 
