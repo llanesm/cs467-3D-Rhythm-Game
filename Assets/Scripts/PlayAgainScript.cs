@@ -3,10 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class PlayAgainScript : MonoBehaviour
 {
-    public ScoreVariable Score;
-    public HotStreakVariable HotStreak;
-    public HighestStreakVariable HighestStreak;
-
     private void Update()
     {
         CheckForTapInput();
